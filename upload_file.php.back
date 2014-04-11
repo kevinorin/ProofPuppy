@@ -1,0 +1,294 @@
+
+<?php
+if ($_FILES["file"]["error"] > 0)
+  {
+  echo "Error: " . $_FILES["file"]["error"] . "<br>";
+  }
+else
+  {
+  echo "Upload: " . $_FILES["file"]["name"] . "<br>";
+  echo "Type: " . $_FILES["file"]["type"] . "<br>";
+  echo "Size: " . ($_FILES["file"]["size"] / 1024) . " kB<br>";
+  echo "Stored in: " . $_FILES["file"]["tmp_name"];
+  }
+?>
+
+<!-- count the uploaded file-->
+
+<!--count words start -->
+
+<?php
+$f =  $_FILES["file"]["tmp_name"];
+$fileArray = pathinfo($_FILES["file"]["name"]);
+$file_ext = $fileArray['extension'];
+   
+// Convert Docx To Text File  
+if ($file_ext == 'docx')
+{
+ function read_docx($filename){
+
+        $striped_content = '';
+        $content = '';
+
+        $zip = zip_open($filename);
+
+        if (!$zip || is_numeric($zip)) return false;
+
+        while ($zip_entry = zip_read($zip)) {
+
+            if (zip_entry_open($zip, $zip_entry) == FALSE) continue;
+
+            if (zip_entry_name($zip_entry) != "word/document.xml") continue;
+
+            $content .= zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
+
+            zip_entry_close($zip_entry);
+        }// end while
+
+        zip_close($zip);
+
+        $content = str_replace('</w:r></w:p></w:tc><w:tc>', " ", $content);
+        $content = str_replace('</w:r></w:p>', "\r\n", $content);
+		
+        $striped_content = strip_tags($content);
+		//$striped_content = trim($striped_content, "DOCU");
+		//$striped_content = preg_replace("/[^a-zA-Z0-9\s\,\.\-\n\r\t@\/\_\(\)]/","",$striped_content);
+
+        return $striped_content;
+    }
+
+$content = read_docx($f);
+if($content !== false) {
+		
+//echo nl2br($content);	
+}
+else {
+echo 'Couldn\'t the file. Please check that file.';
+}
+
+// count words
+$numWords = str_word_count($content);
+echo "This file has ". $numWords . " words";
+echo nl2br("\n");
+
+//cost estimate
+$priceperword=0.03;
+$costEst = $numWords * $priceperword;
+echo "The estimated cost is ". $costEst . " dollars";
+echo nl2br("\n");
+echo nl2br("\n");
+
+}
+
+// Convert Doc To Text File  
+else if($file_ext == 'doc')
+{
+
+ function read_doc($filename) {
+        $fileHandle = fopen($filename, "r");
+        $line = @fread($fileHandle, filesize($filename));   
+        $lines = array_filter(explode(chr(0x0d),$line));
+        $outtext = "";
+        foreach($lines as $thisline)
+          {
+            $pos =strpos($thisline, chr(0x00));
+            if (($pos !== FALSE)||(strlen($thisline)==0))
+              {
+              } else {
+                $outtext .= $thisline." ";
+              }
+          }
+		  
+		   $outtext = str_replace('</w:r></w:p></w:tc><w:tc>', " ", $outtext);
+        $outtext = str_replace('</w:r></w:p>', "\r\n", $outtext);
+		
+        $striped_content = strip_tags($outtext);
+		
+$striped_content = preg_replace("/[^a-zA-Z0-9\s\,\.\-\n\r\t\@\/\_\(\)]/","",$striped_content);
+//$striped_content = preg_replace("/<img[^>]+\>/i", "", $striped_content);
+        return $striped_content;
+    }
+
+//$userDoc = "example-1.doc";
+
+$text = read_doc($f);
+
+//echo nl2br($text);
+//echo $text;
+$numWords = str_word_count($text);
+$numWords = $numWords;
+echo "This file has ". $numWords . " words";
+echo nl2br("\n");
+
+//cost estimate
+$priceperword=0.03;
+$costEst = $numWords * $priceperword;
+echo "The estimated cost is ". $costEst . " dollars";
+echo nl2br("\n");
+echo nl2br("\n");
+}
+
+// Convert Pptx To Text File  
+else if($file_ext == 'pptx')
+{
+function pptx_to_text($input_file){
+$zip_handle = new ZipArchive;
+$output_text = "";
+if(true === $zip_handle->open($input_file)){
+$slide_number = 1; //loop through slide files
+while(($xml_index = $zip_handle->locateName("ppt/slides/slide".$slide_number.".xml")) !== false){
+$xml_datas = $zip_handle->getFromIndex($xml_index);
+$xml_handle = DOMDocument::loadXML($xml_datas, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
+$output_text .= strip_tags($xml_handle->saveXML());
+$slide_number++;
+}
+if($slide_number == 1){
+$output_text .="";
+}
+$zip_handle->close();
+}else{
+$output_text .="";
+}
+return $output_text;
+}
+
+
+$text = pptx_to_text($f);
+$numWords = str_word_count($text);
+echo "This file has ". $numWords . " words";
+echo nl2br("\n");
+
+//cost estimate
+$priceperword=0.03;
+$costEst = $numWords * $priceperword;
+echo "The estimated cost is ". $costEst . " dollars";
+echo nl2br("\n");
+echo nl2br("\n");
+	
+}
+
+// Convert Ppt To Text File  
+else if($file_ext == 'ppt')
+
+{
+	
+function parsePPT($filename) {
+// This approach uses detection of the string "chr(0f).Hex_value.chr(0x00).chr(0x00).chr(0x00)" to find text strings, which are then terminated by another NUL chr(0x00). [1] Get text between delimiters [2] 
+$fileHandle = fopen($filename, "r");
+$line = @fread($fileHandle, filesize($filename));
+$lines = explode(chr(0x0f),$line);
+$outtext = '';
+
+foreach($lines as $thisline) {
+if (strpos($thisline, chr(0x00).chr(0x00).chr(0x00)) == 1) {
+$text_line = substr($thisline, 4);
+$end_pos   = strpos($text_line, chr(0x00));
+$text_line = substr($text_line, 0, $end_pos);
+$text_line = preg_replace("/[^a-zA-Z0-9\s\,\.\-\n\r\t@\/\_\(\)]/","",$text_line);
+if (strlen($text_line) > 1) {
+$outtext.= substr($text_line, 0, $end_pos)."\n";
+}
+}
+}
+return $outtext;
+}
+
+$text=parsePPT($f);
+$numWords = str_word_count($text);
+$numWords = $numWords-54;
+echo "This file has ". $numWords . " words";
+echo nl2br("\n");
+
+//cost estimate
+$priceperword=0.03;
+$costEst = $numWords * $priceperword;
+echo "The estimated cost is ". $costEst . " dollars";
+echo nl2br("\n");
+echo nl2br("\n");
+	
+}
+else
+{
+$str = file_get_contents($f);
+
+// count words
+$numWords = str_word_count($str);
+echo "This file has ". $numWords . " words";
+echo nl2br("\n");
+
+//cost estimate
+$priceperword=0.03;
+$costEst = $numWords * $priceperword;
+echo "The estimated cost is ". $costEst . " dollars";
+echo nl2br("\n");
+echo nl2br("\n");	
+	
+}
+
+?>
+<!--count words end-->
+
+
+<!--authorize.net -->
+
+<!-- This section generates the "Submit Payment" button using PHP           -->
+<?php
+// This sample code requires the mhash library for PHP versions older than
+// 5.1.2 - http://hmhash.sourceforge.net/
+	
+// the parameters for the payment can be configured here
+// the API Login ID and Transaction Key must be replaced with valid values
+$loginID		= "xxxxxxxx";
+$transactionKey = "xxxxxxxxxxxxxx";
+$amount 		= $costEst;
+$description 	= "Proofing Transaction";
+$label 			= "Checkout "; // The is the label on the 'submit' button
+$testMode		= "false";
+// By default, this sample code is designed to post to our test server for
+// developer accounts: https://test.authorize.net/gateway/transact.dll
+// for real accounts (even in test mode), please make sure that you are
+// posting to: https://secure.authorize.net/gateway/transact.dll
+$url			= "https://test.authorize.net/gateway/transact.dll";
+
+// If an amount or description were posted to this page, the defaults are overidden
+if (array_key_exists("amount",$_REQUEST))
+	{ $amount = $_REQUEST["amount"]; }
+if (array_key_exists("amount",$_REQUEST))
+	{ $description = $_REQUEST["description"]; }
+
+// an invoice is generated using the date and time
+$invoice	= date(YmdHis);
+// a sequence number is randomly generated
+$sequence	= rand(1, 1000);
+// a timestamp is generated
+$timeStamp	= time();
+
+// The following lines generate the SIM fingerprint.  PHP versions 5.1.2 and
+// newer have the necessary hmac function built in.  For older versions, it
+// will try to use the mhash library.
+if( phpversion() >= '5.1.2' )
+	{ $fingerprint = hash_hmac("md5", $loginID . "^" . $sequence . "^" . $timeStamp . "^" . $amount . "^", $transactionKey); }
+else 
+	{ $fingerprint = bin2hex(mhash(MHASH_MD5, $loginID . "^" . $sequence . "^" . $timeStamp . "^" . $amount . "^", $transactionKey)); }
+?>
+
+<!-- Print the Amount and Description to the screen. -->
+Authorize Amount: <?php echo $amount; ?> <br />
+Description: <?php echo $description; ?> <br />
+
+<!-- Create the HTML form containing necessary SIM post values -->
+<form method='post' action='<?php echo $url; ?>' >
+<!--  Additional fields can be added here as outlined in the SIM integration
+ guide at: http://developer.authorize.net -->
+	<input type='hidden' name='x_login' value='<?php echo $loginID; ?>' />
+	<input type='hidden' name='x_amount' value='<?php echo $amount; ?>' />
+	<input type='hidden' name='x_description' value='<?php echo $description; ?>' />
+	<input type='hidden' name='x_invoice_num' value='<?php echo $invoice; ?>' />
+	<input type='hidden' name='x_fp_sequence' value='<?php echo $sequence; ?>' />
+	<input type='hidden' name='x_fp_timestamp' value='<?php echo $timeStamp; ?>' />
+	<input type='hidden' name='x_fp_hash' value='<?php echo $fingerprint; ?>' />
+	<input type='hidden' name='x_test_request' value='<?php echo $testMode; ?>' />
+	<input type='hidden' name='x_show_form' value='PAYMENT_FORM' />
+	<input type='submit' value='<?php echo $label; ?>' />
+</form>
+

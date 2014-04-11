@@ -1,0 +1,4 @@
+#--- DH-PHP handlers ---
+AddHandler php-cgi .php
+Action php-cgi /cgi-bin/dispatch.cgi
+

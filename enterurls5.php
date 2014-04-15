@@ -62,12 +62,21 @@ require_once 'emailer.php';
 if(isset($_POST['count']))
 {
 
+    
+    
     $wordcount = new WordCount();
     $error = array();
     $words = array();
 
     $i=-1;
     $urlarray = array();
+    
+    
+    
+    
+    $user_email_id= $_POST['user_email_id'];
+    
+    $instructions = $_POST['instructions'];
 
     while($i <= 8)
     {
@@ -133,10 +142,21 @@ if(isset($_POST['count']))
            <div>
             <div class="content"> -->
 
-                <form method="post">
+                <form class="UpForm" method="post">
                     <?php
-
                     $htmlouput= '<table border="0">
+                        <tr>
+                        <td><label for="user_email">Your email:</label></td><br/>
+                        </tr>
+                        <tr><td>
+                         <input style="width:300px;" type="email" required="" name="user_email_id" value="'.$user_email_id.'" /></td><br/>
+                        </tr><tr></tr><br>
+                        <tr>
+                        <td><label for="instructions">Any Message or Special Instructions ?</label></td><br/>
+                        </tr>
+                        <tr><td>
+                         <textarea style="width:500px; min-height: 200px;" name="instructions">'. $instructions .'</textarea></td><br/>
+                        </tr><tr></tr>
                         <tr>
                             <td>URL</td>
                             <td>Words</td>

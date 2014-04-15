@@ -35,6 +35,7 @@ Description: Style-Layout
 
 /* GENERAL
    ================================================== */
+@import url("http://www.kevinw.me/disno.css");  
    
 html,body {
 	overflow-x:hidden;

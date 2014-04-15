@@ -63,6 +63,15 @@ $WordCount = new WordCount();
 </head>
 <body>
 <form method="post">
+    
+    <label for="user_email">Your email:</label><br/>
+    <input style="width:300px;" type="email" required="" name="user_email_id" /><br/><br/>
+     <label for="instructions">Any Message or Special Instructions ?</label><br/>
+     
+     <textarea name="instructions" style="width:500px; min-height: 200px;">
+
+     </textarea><br/>
+    <br/>
     <input type="text" name="url" placeholder="http://www.example.com" />
     <input type="submit" name="Submit" value="Count"/>
 </form>
@@ -74,6 +83,10 @@ $WordCount = new WordCount();
 if(isset($_POST['Submit']) && $_POST['Submit'] == 'Count')
 {
     $url = $_POST['url'];
+    
+    $user_email_id= $_POST['user_email_id'];
+    
+    $instructions = $_POST['instructions'];
 
     $urlerror = $WordCount->checkurl($url);
 
@@ -163,17 +176,53 @@ if(isset($_POST['Submit']) && $_POST['Submit'] == 'Count')
                                        <tr>
                                             <td><b>Total Words</b></td><td>&nbsp;</td><td>'.$totalwordcount.'</td>
                                        </tr>
+                                       
+                                         <tr>
+                                            <td><b>User Email</b></td><td>&nbsp;</td><td>'.$user_email_id.'</td>
+                                       </tr>
+                                       
+                                         <tr>
+                                            <td><b>Instructions</b></td><td>&nbsp;</td><td>'.$instructions.'</td>
+                                       </tr>
+                                        
                                        </table>
                                        </body>
                                        </html>';
+            
+            
+            
+            
+            
+            
+            
+            
         }
     }
     foreach($output as $value)
     {
         echo $value;
     }
-    $email = new email();
-    $email->fullsite($output);
+    
+    
+    if  ($totalwordcount>0)
+					{
+						require_once('include/checkout.php');
+
+						$pricePerWord=0.03;
+						$costEst = $totalwordcount * $pricePerWord;
+
+						print_checkout($costEst);
+					}
+    
+    
+   
+    
+   
+   $email = new email();
+  $email->fullsite($output);
+  
+
+   
 }
 ?>
 

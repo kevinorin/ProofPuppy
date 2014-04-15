@@ -94,36 +94,33 @@
         </div>
 
         <!-- CONTACT-INFO -->
-        <div class="col-sm-6">
-          <div class="row-info row">
-            <div class="wow fadeInUp">
+        
+                <h4 class="title-contact">Why use ProofPuppy?</h4>
+                 <P class="p-contact">1. ProofPuppy catches spelling in context, and everyday grammer that software misses.</p>
+                      <P class="p-contact">2. ProofPuppy gets, but pure software would miss, the following: advise/advice; loose/lose; passed/past; dessert/desert; weather/whether; then/than; ite/sight/cite; angel vs. angle; note vs. not; being vs. begin; of vs. off; causal vs. casual; or vs. of; form vs. from; red vs. read;god vs. good	;read vs. ready; her  vs. here; sing vs. sign; know vs. now; son vs. soon; man vs. many; through vs. thorough; manger vs. manager; won  vs. own; meat vs. meant; word  vs. world; moth vs. month; you vs. your and a whole lot more....</P>
+                 
+                          
+                     <P class="p-contact">3. Here is a whole  paragraph that is full of errors, but Word would says there is nothing wrong - (feel free to cut and paste them in Word): </P>
+                                                          
+                                                       <P class="p-contact">  “Marketing are bad for brand big and small. You Know What I am Saying? It is no wondering that advertisings are bad for company in America, Chicago and Germany. ... McDonald's and Coca Cola are good brand. ... Gates do good marketing job in Microsoft.”</P>
+                                                       <P class="p-contact">4. Sometimes when you have written something and re-written it a hundred times, you are blind to the errors - you see what is in your head, rather than what is on the page.</P>
+                                                                                       <P class="p-contact">5. We can proof text in images.</P>
 
-              <div class="col-info col-sm-12">
-                <h4 class="title-contact">Get in touch</h4>
-                <P class="p-contact">ProofPuppy finds things that software misses.
-                </P>
+                                                       
+                                         <P class="p-contact">6. If Word spelling is so great, how come  many sites (and documents) still have errors? </P>
+                                                          
+                                                          
+
+                             
+
+
+
               </div>
 
-              <div class="col-info col-sm-12">
-                <h4 class="title-contact">The office</h4>
-                  <i class="fa fa-map-marker fa-2x pull-left"></i>
-                <h5 class="title-contact-sm">Philadelphia, PA</h5>
-                  <i class="fa fa-phone fa-2x pull-left"></i>
-                <h5 class="title-contact-sm">Phone: +1-919-475-4346</h5>
-                  <i class="fa fa-envelope fa-2x pull-left"></i>
-                <h5 class="title-contact-sm">contact @ proofpuppy.com</h5>
-              <h5 class="title-contact-sm">  <a href="https://twitter.com/ProofPuppy"><p>@proofpuppy</p></a> </h5>
+              
                 
-              </div>
-              <div class="col-info col-sm-12">
-                
-              </div>
+             
 
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 
